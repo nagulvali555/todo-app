@@ -1,3 +1,3 @@
-db_user: mysql.
+db_user: mysql
 db_group: mysql
-db_pass: password
+mysql_root_password: password

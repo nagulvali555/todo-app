@@ -42,7 +42,7 @@
     - name: update permissions
       file:
         path: /usr/local/mysql
-        user: "{{ db_user }}"
+        owner: "{{ db_user }}"
         group: "{{ db_group }}"
         mode: 775
         recurse: yes
@@ -61,6 +61,20 @@
         chdir: /usr/local/mysql
         cmd: support_files/mysql.server start
 
+    - name: update mysql root password
+      mysql_user:
+        name: root
+        host: localhost
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+        check_implicit_admin: yes
+        priv: "*.*:ALL,GRANT"
 
+    - name: create todo database
+      mysql_db:
+        name: todo
+        state: present
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
 
 
