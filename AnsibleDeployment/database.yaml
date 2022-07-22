@@ -38,9 +38,11 @@
   ignore_errors: yes
 
 - name: Reload privilege tables
-  command: |
-    mysql -u {{ mysql_user }} -p{{ mysql_pass }} -ne 'FLUSH PRIVILEGES'
-  changed_when: False
+  mysql_query:
+    login_host: "{{ mysql_host }}"
+    login_user: "{{ mysql_user }}"
+    login_password: "{{ mysql_pass }}"
+    query: FLUSH PRIVILEGES
 
 - name: Create todo database
   mysql_db:
