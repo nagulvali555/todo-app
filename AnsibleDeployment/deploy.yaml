@@ -1,24 +1,4 @@
 ---
-- name: create infrastructure
-  hosts: localhost
-  connection: local
-  tasks:
-    - name: install pip3
-      package:
-        name:
-          - python3-pip
-        state: present
-
-    - name: Install boto3 modules
-      pip:
-        name:
-          - boto3
-        state: present
-        executable: pip3
-
-    - include_tasks: instances.yaml
-  tags: infra
-
 - name: Install requirements
   hosts: all
   become: yes
