@@ -29,11 +29,11 @@
 
 - name: Set MySQL root password
   mysql_user:
-    login_host: {{ mysql_host }}
-    login_user: {{ mysql_user }}
+    login_host: "{{ mysql_host }}"
+    login_user: "{{ mysql_user }}"
     login_password: ''
-    name: {{ mysql_user }}
-    password: {{ mysql_pass }}
+    name: "{{ mysql_user }}"
+    password: "{{ mysql_pass }}"
     state: present
   ignore_errors: yes
 
@@ -45,6 +45,6 @@
 - name: create todo database
   mysql_db:
     login_user: root
-    login_password: {{ mysql_pass }}
-    name: {{ mysql_db }}
+    login_password: "{{ mysql_pass }}"
+    name: "{{ mysql_db }}"
     state: present
