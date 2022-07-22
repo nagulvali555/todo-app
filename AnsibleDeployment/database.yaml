@@ -28,6 +28,7 @@
   ignore_errors: yes
 
 - name: Set MySQL root password
+  become_user: root
   mysql_user:
     login_host: localhost
     login_user: root
