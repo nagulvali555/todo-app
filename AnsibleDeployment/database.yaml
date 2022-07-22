@@ -39,10 +39,10 @@
 
 - name: Reload privilege tables
   command: |
-    "mysql -p{{ mysql_pass }} -ne 'FLUSH PRIVILEGES'"
+    mysql -u r{{ mysql_user }} -p{{ mysql_pass }} -ne 'FLUSH PRIVILEGES'
   changed_when: False
 
-- name: create todo database
+- name: Create todo database
   mysql_db:
     login_user: root
     login_password: "{{ mysql_pass }}"
