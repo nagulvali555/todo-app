@@ -12,9 +12,11 @@
     state: present
     executable: pip3
 
-- name: update mysql config file to allow remote connections
-  command: |
-    sed -e 's/^bind-address=*/#&/' /etc/mysql/mysql.conf.d/mysqld.cnf
+- name: Update mysql config file to allow remote connections
+  lineinfile:
+    path: /etc/mysql/mysql.conf.d/mysqld.cnf
+    regexp: "^bind-address=*"
+    line: "bind-address = 0.0.0.0"
 
 - name: Start mysql service
   systemd:
@@ -28,15 +30,14 @@
   ignore_errors: yes
 
 - name: Set MySQL root password
-  become_user: root
   mysql_user:
     login_host: localhost
     login_user: root
     login_password: ''
     name: root
+    priv: '*.*:ALL,GRANT'
     password: "{{ mysql_pass }}"
     state: present
-  ignore_errors: yes
 
 - name: Reload privilege tables
   mysql_query:
