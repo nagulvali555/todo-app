@@ -6,15 +6,15 @@
 
     - name: create mysql group
       group:
-        name: mysql
+        name: {{ db_group }}
         state: present
 
     - name: create mysql user
       user:
-        name: mysql
+        name: {{ db_user }}
         system: yes
         shell: /bin/false
-        group: mysql
+        group: {{ db_group }}
         state: present
 
     - name: download sql archive
@@ -26,7 +26,6 @@
       unarchive:
         src: /home/ubuntu/mysql-5.7.37-linux-glibc2.12-x86_64.tar.gz
         dest: /usr/local/
-        group: mysql
         remote_src: yes
 
     - name: create mysql softlik
@@ -37,10 +36,15 @@
 
     - name: create mysql-files folder
       file:
-        name: /usr/local/mysql/mysql-files
-        owner: mysql
-        group: mysql
-        mode: 750
+        path: /usr/local/mysql/mysql-files
+        state: directory
+
+    - name: update permissions
+      file:
+        path: /usr/local/mysql
+        user: {{ db_user }}
+        group: {{ db_group }}
+        mode: 775
         recurse: yes
         state: directory
 
@@ -49,7 +53,7 @@
         chdir: /usr/local/mysql
         cmd: "{ item }"
       loop:
-        - bin/mysqld --initialize-insecure --user=mysql
+        - bin/mysqld --initialize-insecure --user={{ db_user }}
         - bin/mysql_ssl_rsa_setup
 
     - name: start mysql service
