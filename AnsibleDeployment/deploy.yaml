@@ -6,15 +6,15 @@
 
     - name: create mysql group
       group:
-        name: {{ db_group }}
+        name: "{{ db_group }}"
         state: present
 
     - name: create mysql user
       user:
-        name: {{ db_user }}
+        name: "{{ db_user }}"
         system: yes
         shell: /bin/false
-        group: {{ db_group }}
+        group: "{{ db_group }}"
         state: present
 
     - name: download sql archive
@@ -42,8 +42,8 @@
     - name: update permissions
       file:
         path: /usr/local/mysql
-        user: {{ db_user }}
-        group: {{ db_group }}
+        user: "{{ db_user }}"
+        group: "{{ db_group }}"
         mode: 775
         recurse: yes
         state: directory
@@ -51,7 +51,7 @@
     - name: initialize sql db
       command:
         chdir: /usr/local/mysql
-        cmd: "{ item }"
+        cmd: "{{ item }}"
       loop:
         - bin/mysqld --initialize-insecure --user={{ db_user }}
         - bin/mysql_ssl_rsa_setup
