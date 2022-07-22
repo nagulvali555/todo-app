@@ -1,6 +1,18 @@
 ---
-- name: Deploy todo application
+- name: Install requirements
+  hosts: all
+  become: yes
+  tasks:
+    - include-tasks: requirements.yaml
+
+- name: Setup and configure database
+  hosts: db
+  become: yes
   tasks:
     - include_tasks: database.yaml
-    - include_tasks: frontend.yaml
 
+- name: Setup and configure frontend application
+  hosts: frontend
+  become: yes
+  tasks:
+    - include_tasks: database.yaml
