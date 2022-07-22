@@ -3,6 +3,17 @@
   hosts: localhost
   connection: local
   tasks:
+    - name: install pip3
+      package:
+        - python3-pip
+
+    - name: Install boto3 modules
+      pip:
+        name:
+          - boto3
+        state: present
+        executable: pip3
+
     - include_tasks: instances.yaml
   tags: infra
 
