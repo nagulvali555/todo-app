@@ -9,10 +9,11 @@
   command: |
     npm install yarn
 
-- name: update path
-  become_user: ubuntu
-  command: |
-    export PATH=$HOME/node_modules/yarn/bin:$PATH
+- name: Set PATH
+  lineinfile:
+    dest: /etc/environment
+    state: present
+    line: 'PATH=/home/ubuntu/node_modules/yarn/bin/:$PATH'
 
 - name: Clone the project repository
   git:
@@ -28,8 +29,8 @@
 - name: run application
   become_user: ubuntu
   command: node src/index.js
-    args:
-      chdir: $HOME/getting-started/app/
+  args:
+    chdir: $HOME/getting-started/app/
   environment:
     MYSQL_HOST: "{{ mysql_host }}"
     MYSQL_USER: "{{ mysql_user }}"
