@@ -4,77 +4,46 @@
   become: yes
   tasks:
 
-    - name: create mysql group
-      group:
-        name: "{{ db_group }}"
+    - name: Install required packages
+      package:
+        name:
+          - mysql-server
+          - mysql-client
+          - python3
+          - python3-pip
+        state: latest
+
+    - name: Install pip modules
+      pip:
+        name:
+          - PyMySQL
         state: present
+        executable: pip3
 
-    - name: create mysql user
-      user:
-        name: "{{ db_user }}"
-        system: yes
-        shell: /bin/false
-        group: "{{ db_group }}"
-        state: present
+    - name: Ensure mysql service is running
+      systemd:
+        name: mysqld
+        state: started
+        enabled: yes
 
-    - name: download sql archive
-      get_url:
-        url: https://downloads.mysql.com/archives/get/p/23/file/mysql-5.7.37-linux-glibc2.12-x86_64.tar.gz
-        dest: /home/ubuntu
-
-    - name: unarchive the package
-      unarchive:
-        src: /home/ubuntu/mysql-5.7.37-linux-glibc2.12-x86_64.tar.gz
-        dest: /usr/local/
-        remote_src: yes
-
-    - name: create mysql softlik
-      file:
-        src: /usr/local/mysql-5.7.37-linux-glibc2.12-x86_64
-        dest: /usr/local/mysql
-        state: link
-
-    - name: create mysql-files folder
-      file:
-        path: /usr/local/mysql/mysql-files
-        state: directory
-
-    - name: update permissions
-      file:
-        path: /usr/local/mysql
-        owner: "{{ db_user }}"
-        group: "{{ db_group }}"
-        mode: 775
-        recurse: yes
-        state: directory
-
-    - name: initialize sql db
-      command:
-        chdir: /usr/local/mysql
-        cmd: "{{ item }}"
-      loop:
-        - bin/mysqld --initialize-insecure --user={{ db_user }}
-        - bin/mysql_ssl_rsa_setup
-
-    - name: start mysql service
-      command:
-        chdir: /usr/local/mysql
-        cmd: support_files/mysql.server start
-
-    - name: update mysql root password
+    - name: Ensure root user can only login from localhost
       mysql_user:
-        name: root
-        host: localhost
-        login_user: root
         login_password: "{{ mysql_root_password }}"
         check_implicit_admin: yes
-        priv: "*.*:ALL,GRANT"
-
-    - name: create todo database
-      mysql_db:
-        name: todo
+        name: root
+        host: "{{ item }}"
+        password: "{{ mysql_root_password }}"
         state: present
-        login_user: root
-        login_password: "{{ mysql_root_password }}"
+      with_items:
+        - localhost
+        - 127.0.0.1
+        - ::1
+
+    - name: Reload privilege tables
+      command: |
+        mysql -p{{ mysql_root_password }} -ne "{{ item }}"
+      with_items:
+        - FLUSH PRIVILEGES
+      changed_when: False
 
 
