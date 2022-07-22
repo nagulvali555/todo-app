@@ -53,9 +53,7 @@
     - name: Change the authentication plugin of MySQL root user to mysql_native_password
       shell: |
         mysql -u root -e 'UPDATE mysql.user SET plugin="mysql_native_password" WHERE user="root" AND host="localhost"'
-
-    - name: Flush Privileges
-      shell: mysql -u root -e 'FLUSH PRIVILEGES'
+      changed_when: False
 
     - name: Set MySQL root password
       mysql_user:
@@ -65,6 +63,7 @@
         name: 'root'
         password: '{{ mysql_pass }}'
         state: present
+      changed_when: False
 
     - name: Reload privilege tables
       command: |
@@ -73,7 +72,14 @@
         - FLUSH PRIVILEGES
       changed_when: False
 
-    - name: create todo database
-      command: |
-        mysql -p{{ mysql_pass }} -ne "CREATE DATABASE todo"
+#    - name: create todo database
+#      command: |
+#        mysql -p{{ mysql_pass }} -ne "CREATE DATABASE todo"
+#      changed_when: False
 
+    - name: create todo database
+      mysql_db:
+        login_user: root
+        login_password: "{{ mysql_pass }}"
+        name: todo
+        state: present
