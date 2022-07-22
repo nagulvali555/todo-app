@@ -32,3 +32,8 @@
   command: node src/index.js
     args:
       chdir: $HOME/getting-started/app/
+  environment:
+    MYSQL_HOST: {{ mysql_host }}
+    MYSQL_USER: {{ mysql_user }}
+    MYSQL_PASSWORD: {{ mysql_pass }}
+    MYSQL_DB: {{ mysql_db }}

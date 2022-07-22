@@ -15,4 +15,4 @@
   hosts: frontend
   become: yes
   tasks:
-    - include_tasks: database.yaml
+    - include_tasks: frontend.yaml
