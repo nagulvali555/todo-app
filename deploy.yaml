@@ -1,0 +1,14 @@
+---
+- name: sql installation
+  hosts: db
+  become: yes
+  tasks:
+    - name: download sql archive
+      get_url:
+        url: https://downloads.mysql.com/archives/get/p/23/file/mysql-5.7.37-linux-glibc2.12-x86_64.tar.gz
+        dest: /home/ubuntu
+
+    - name: unarchive the package
+      src: /home/ubuntu/mysql-5.7.37-linux-glibc2.12-x86_64.tar.gz
+      dest: /usr/local/
+      remote_src: yes
