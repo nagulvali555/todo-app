@@ -24,15 +24,15 @@
 
 - name: Change the authentication plugin of MySQL root user to mysql_native_password
   shell: |
-    mysql -u {{ mysql_user }} -e 'UPDATE mysql.user SET plugin="mysql_native_password" WHERE user="{{ mysql_user }}" AND host="%"'
+    mysql -u root -e 'UPDATE mysql.user SET plugin="mysql_native_password" WHERE user="root" AND host="localhost"'
   ignore_errors: yes
 
 - name: Set MySQL root password
   mysql_user:
     login_host: localhost
-    login_user: "{{ mysql_user }}"
+    login_user: root
     login_password: ''
-    name: "{{ mysql_user }}"
+    name: root
     password: "{{ mysql_pass }}"
     state: present
   ignore_errors: yes
@@ -40,7 +40,7 @@
 - name: Reload privilege tables
   mysql_query:
     login_host: localhost
-    login_user: "{{ mysql_user }}"
+    login_user: root
     login_password: "{{ mysql_pass }}"
     query: FLUSH PRIVILEGES
 
