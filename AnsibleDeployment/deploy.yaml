@@ -3,7 +3,7 @@
   hosts: all
   become: yes
   tasks:
-    - include-tasks: requirements.yaml
+    - include_tasks: requirements.yaml
 
 - name: Setup and configure database
   hosts: db
