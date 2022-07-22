@@ -1,4 +1,9 @@
+[all]
+frontend
+db
+
 [frontend]
+3.108.40.25
 
 [db]
 43.205.120.123
