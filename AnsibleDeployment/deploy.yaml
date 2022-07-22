@@ -3,6 +3,26 @@
   hosts: db
   become: yes
   tasks:
+    - name: Update Package Cache (apt/Ubuntu)
+      tags: always
+      apt:
+        update_cache: yes
+      changed_when: false
+      when: ansible_distribution == "Ubuntu"
+
+    - name: Update Package Cache (dnf/CentOS)
+      tags: always
+      dnf:
+        update_cache: yes
+      changed_when: false
+      when: ansible_distribution == "CentOS"
+
+    - name: Update Package Cache (yum/Amazon)
+      tags: always
+      yum:
+        update_cache: yes
+      changed_when: false
+      when: ansible_distribution == "Amazon"
 
     - name: Install required packages
       package:
@@ -22,7 +42,7 @@
 
     - name: Ensure mysql service is running
       systemd:
-        name: mysqld
+        name: mysql
         state: started
         enabled: yes
 
