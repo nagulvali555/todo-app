@@ -1,0 +1,13 @@
+all:
+  vars:
+    mysql_host: 43.205.110.202
+    mysql_user: root
+    mysql_pass: password
+    mysql_db: todos
+  children:
+    frontend:
+      hosts:
+        43.205.112.88:
+    database:
+      hosts:
+        43.205.110.202:

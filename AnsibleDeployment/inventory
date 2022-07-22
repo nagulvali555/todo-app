@@ -1,9 +1,0 @@
-[all:children]
-frontend
-db
-
-[frontend]
-43.205.112.88
-
-[db]
-43.205.110.202
