@@ -1,4 +1,4 @@
-mysql_host = 3.110.225.251
-mysql_user = root
-mysql_pass = password
-mysql_db = todos
+mysql_host: 3.110.225.251
+mysql_user: root
+mysql_pass: password
+mysql_db: todos

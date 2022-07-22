@@ -1,0 +1,12 @@
+- name: create database instance
+  ec2:
+    name: database
+    key_name: vali-cloud-ap-south-1
+    vpc_subnet_id: subnet-09c75563e8317e6f0
+    intance_type: t2.micro
+    security_group: default
+    network:
+      assign_public_ip: true
+    image_id: ami-068257025f72f470d
+    tags:
+      Environment: dev

@@ -1,4 +1,11 @@
 ---
+- name: create infrastructure
+  hosts: localhost
+  connection: local
+  tasks:
+    - include_tasks: instances.yaml
+  tags: infra
+
 - name: Install requirements
   hosts: all
   become: yes

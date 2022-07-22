@@ -14,7 +14,7 @@
     state: present
     executable: pip3
 
-- name: update mysql config file
+- name: update mysql config file to allow remote connections
   command: |
     sed -e 's/^bind-address=*/#&/' /etc/mysql/mysql.conf.d/mysqld.cnf
 
@@ -26,29 +26,27 @@
 
 - name: Change the authentication plugin of MySQL root user to mysql_native_password
   shell: |
-    mysql -u root -e 'UPDATE mysql.user SET plugin="mysql_native_password" WHERE user="root" AND host="%"'
+    mysql -u {{ mysql_user }} -e 'UPDATE mysql.user SET plugin="mysql_native_password" WHERE user="{{ mysql_user }}" AND host="%"'
   ignore_errors: yes
 
 - name: Set MySQL root password
   mysql_user:
-    login_host: 'localhost'
-    login_user: 'root'
+    login_host: {{ mysql_host }}
+    login_user: {{ mysql_user }}
     login_password: ''
-    name: 'root'
-    password: '{{ mysql_pass }}'
+    name: {{ mysql_user }}
+    password: {{ mysql_pass }}
     state: present
   ignore_errors: yes
 
 - name: Reload privilege tables
   command: |
-    mysql -p{{ mysql_pass }} -ne "{{ item }}"
-  with_items:
-    - FLUSH PRIVILEGES
+    "mysql -p{{ mysql_pass }} -ne 'FLUSH PRIVILEGES'"
   changed_when: False
 
 - name: create todo database
   mysql_db:
     login_user: root
-    login_password: "{{ mysql_pass }}"
-    name: todo
+    login_password: {{ mysql_pass }}
+    name: {{ mysql_db }}
     state: present
