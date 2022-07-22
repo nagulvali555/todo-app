@@ -46,6 +46,10 @@
         state: started
         enabled: yes
 
+- name: initialize dabase
+  hosts: db
+  become: yes
+  tasks:
     - name: Change the authentication plugin of MySQL root user to mysql_native_password
       shell: mysql -u root -e 'UPDATE mysql.user SET plugin="mysql_native_password"
       WHERE user="root" AND host="localhost"'
@@ -55,13 +59,12 @@
 
     - name: Set MySQL root password
       mysql_user:
-      login_host: 'localhost'
-      login_user: 'root'
-      login_password: ''
-      name: 'root'
-      password: '{{ mysql_pass }}'
-      state: present
-
+        login_host: 'localhost'
+        login_user: 'root'
+        login_password: ''
+        name: 'root'
+        password: '{{ mysql_pass }}'
+        state: present
 
     - name: Reload privilege tables
       command: |
@@ -70,4 +73,7 @@
         - FLUSH PRIVILEGES
       changed_when: False
 
+    - name: create todo database
+      command: |
+        mysql -p{{ mysql_pass }} -ne "CREATE DATABASE todo"
 
