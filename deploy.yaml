@@ -3,12 +3,50 @@
   hosts: db
   become: yes
   tasks:
+
+    - name: create mysql group
+      group:
+        name: mysql
+        state: present
+
+    - name: create mysql user
+      user:
+        name: mysql
+        system: yes
+        shell: /bin/false
+        group: mysql
+        state: present
+
     - name: download sql archive
       get_url:
         url: https://downloads.mysql.com/archives/get/p/23/file/mysql-5.7.37-linux-glibc2.12-x86_64.tar.gz
         dest: /home/ubuntu
 
     - name: unarchive the package
-      src: /home/ubuntu/mysql-5.7.37-linux-glibc2.12-x86_64.tar.gz
-      dest: /usr/local/
-      remote_src: yes
+      unarchive:
+        src: /home/ubuntu/mysql-5.7.37-linux-glibc2.12-x86_64.tar.gz
+        dest: /usr/local/
+        group: mysql
+        remote_src: yes
+
+    - name: create mysql softlik
+      file:
+        src: /usr/local/mysql-5.7.37-linux-glibc2.12-x86_64
+        dest: /usr/local/mysql
+        state: link
+
+    - name: create mysql-files folder
+      file:
+        name: /usr/local/mysql/mysql-files
+        owner: mysql
+        group: mysql
+        mode: 750
+        recurse: yes
+        state: directory
+
+    - name: initialize sql db
+      command:
+        chdir: /usr/local/mysql
+        cmd: support_files/mysql.server start
+
+
