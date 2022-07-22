@@ -47,6 +47,16 @@
     - name: initialize sql db
       command:
         chdir: /usr/local/mysql
+        cmd: "{ item }"
+      loop:
+        - bin/mysqld --initialize-insecure --user=mysql
+        - bin/mysql_ssl_rsa_setup
+
+    - name: start mysql service
+      command:
+        chdir: /usr/local/mysql
         cmd: support_files/mysql.server start
+
+
 
 
