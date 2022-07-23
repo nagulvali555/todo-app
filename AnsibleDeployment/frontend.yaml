@@ -21,10 +21,19 @@
     dest: ~/getting-started
     clone: yes
 
+- name: check dependencies
+  stat:
+    path: ~/.yarn_dependencies
+  register: yarn_dependencies
+
 - name: install dependencies
-  command: '{{ node_module_dir }}/node_modules/yarn/bin/yarn install --production'
+  command: '{{ item }}'
   args:
     chdir: ~/getting-started/app/
+  loop:
+    - '{{ node_module_dir }}/node_modules/yarn/bin/yarn install --production'
+    - touch .yarn_dependencies
+  when: not .yarn_dependencies.stat.exists
 
 - name: run application
   command: nohup node src/index.js >> app.log 2>&1 &
