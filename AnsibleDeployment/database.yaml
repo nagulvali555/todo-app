@@ -18,10 +18,16 @@
     state: started
     enabled: yes
 
+- name: Reload privilege tables
+  command: "{{ item }}"
+  loop:
+    - mysql -u root -e 'UPDATE mysql.user SET plugin="mysql_native_password" WHERE user="root"'
+    - mysql -u root -e 'FLUSH PRIVILEGES'
+
 - name: Ensure root user can only login from localhost
   mysql_user:
     login_user: root
-    check_implicit_admin: yes
+    login_password: ''
     name: root
     host: "{{ item }}"
     password: "{{ mysql_pass }}"
@@ -31,15 +37,7 @@
     - 127.0.0.1
     - ::1
 
-- name: Reload privilege tables
-  mysql_query:
-    login_host: localhost
-    login_user: root
-    login_password: "{{ mysql_pass }}"
-    query: "{{ item }}"
-  loop:
-    - mysql -u root -e 'UPDATE mysql.user SET plugin="mysql_native_password" WHERE user="root"'
-    - FLUSH PRIVILEGES
+
 
 - name: Create todo database
   mysql_db:
