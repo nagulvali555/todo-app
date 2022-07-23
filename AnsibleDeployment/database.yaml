@@ -39,6 +39,7 @@
     host: localhost
     password: '{{ mysql_root_pass }}'
     state: present
+  when: not mysql_root_pass_check.stat.exists
 
 - name: Create todo database
   mysql_db:
@@ -48,7 +49,7 @@
     name: '{{ mysql_db }}'
     state: present
 
-- name: Create database with all database privileges
+- name: Create database user with privileges
   mysql_user:
     login_user: root
     login_password: '{{ mysql_root_pass }}'
