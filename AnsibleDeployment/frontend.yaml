@@ -1,6 +1,6 @@
 - name: set variables
   set_fact:
-    node_module_dir: /usr/local/
+    node_module_dir: /usr/local
 
 - name: Install node packages
   package:
