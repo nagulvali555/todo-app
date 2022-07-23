@@ -20,7 +20,7 @@
 
 - name: Change the authentication plugin of MySQL root user to mysql_native_password
   shell: |
-    mysql -u root -e 'UPDATE mysql.user SET password=PASSWORD({{ mysql_pass }}) plugin="mysql_native_password" WHERE user="root" AND host="%"'
+    mysql -u root -e 'UPDATE mysql.user SET Password=PASSWORD('{{ mysql_pass }}') plugin="mysql_native_password" WHERE user="root" AND host="%"'
   ignore_errors: yes
 
 #- name: Set MySQL root password
