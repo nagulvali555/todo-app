@@ -35,7 +35,7 @@
       check_implicit_admin: yes
       name: root
       priv: '*.*:ALL,GRANT'
-      password: {{ mysql_pass }}
+      password: '{{ mysql_pass }}'
       state: present
 
   - name: Reload privilege tables
