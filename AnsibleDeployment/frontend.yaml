@@ -1,3 +1,7 @@
+- name: setting variables
+  set_facts:
+    node_modules_dir: /usr/local
+
 - name: Install node packages
   package:
     name:
@@ -8,13 +12,8 @@
 - name: Install yarn
   npm:
     name: yarn
-    path: /usr/local
+    path: '{{ node_modules_dir }}'
     state: present
-
-- name: Update path
-  lineinfile:
-    path: /etc/environment
-    line: "PATH=/usr/local/node_modules/yarn/bin:{{ ansible_env.PATH }}"
 
 - name: Clone the project repository
   git:
@@ -26,6 +25,8 @@
   command: yarn install --production
   args:
     chdir: ~/getting-started/app/
+  environment:
+    PATH: "{{ node_modules_dir }}:{{ ansible_env.PATH }}"
 
 - name: run application
   command: node src/index.js
