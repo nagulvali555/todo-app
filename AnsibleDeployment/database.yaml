@@ -19,9 +19,9 @@
     enabled: yes
 
 - name: Reload privilege tables
-  command: "{{ item }}"
+  command: '{{ item }}'
   loop:
-    - mysql -u root -e 'UPDATE mysql.user SET plugin="mysql_native_password" WHERE user="root"'
+    - mysql -u root -e 'UPDATE mysql.user SET plugin="mysql_native_password" WHERE user="root" AND host="localhost"'
     - mysql -u root -e 'FLUSH PRIVILEGES'
 
 - name: Ensure root user can only login from localhost
@@ -29,22 +29,23 @@
     login_user: root
     login_password: ''
     name: root
-    host: "{{ item }}"
-    password: "{{ mysql_pass }}"
+    host: localhost
+    password: '{{ mysql_root_pass }}'
     state: present
-  with_items:
-    - localhost
-    - 127.0.0.1
-    - ::1
-
-
 
 - name: Create todo database
   mysql_db:
     login_host: localhost
     login_user: root
-    login_password: "{{ mysql_pass }}"
-    name: "{{ mysql_db }}"
+    login_password: '{{ mysql_root_pass }}'
+    name: '{{ mysql_db }}'
+    state: present
+
+- name: Create database with all database privileges
+  mysql_user:
+    name: mysql
+    password: '{{ mysql_pass }}'
+    priv: '{{ mysql_db }}.*:ALL,GRANT'
     state: present
 
 - name: Update mysql config file to allow remote connections
