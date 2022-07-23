@@ -15,11 +15,6 @@
     path: '{{ node_module_dir }}'
     state: present
 
-#- name: Update path
-#  lineinfile:
-#    path: /etc/environment
-#    line: PATH={{ node_module_dir }}/node_modules/yarn/bin:{{ ansible_env.PATH }}
-
 - name: Clone the project repository
   git:
     repo: https://github.com/docker/getting-started.git
@@ -27,11 +22,9 @@
     clone: yes
 
 - name: install dependencies
-  command: yarn install --production
+  command: '{{ node_module_dir }}/yarn/bin/yarn install --production'
   args:
     chdir: ~/getting-started/app/
-  environment:
-    PATH: '{{ node_module_dir }}/node_modules/yarn/bin:{{ ansible_env.PATH }}'
 
 - name: run application
   command: node src/index.js
