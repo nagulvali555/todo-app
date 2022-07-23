@@ -27,7 +27,7 @@
     clone: yes
 
 - name: install dependencies
-  command: yarn install --production
+  shell: yarn install --production
   args:
     chdir: ~/getting-started/app/
 
