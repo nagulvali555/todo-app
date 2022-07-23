@@ -8,13 +8,13 @@
 - name: Install yarn
   npm:
     name: yarn
-    path: ~/
+    path: /usr/local
     state: present
 
 - name: Update path
   lineinfile:
     path: /etc/environment
-    line: "PATH=~/node_modules/yarn/bin:{{ ansible_env.PATH }}"
+    line: "PATH=/usr/local/node_modules/yarn/bin:{{ ansible_env.PATH }}"
 
 - name: Clone the project repository
   git:
