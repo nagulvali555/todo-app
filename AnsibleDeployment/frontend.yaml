@@ -9,8 +9,11 @@
   command: |
     npm install yarn
 
-- name: update path with yarn
-  command: export PATH=/home/ubuntu/node_modules/yarn/bin:${PATH}
+- name: Set PATH
+  lineinfile:
+    dest: /etc/environment
+    state: present
+    line: PATH=/home/ubuntu/node_modules/yarn/bin:$PATH
 
 - name: Clone the project repository
   git:
