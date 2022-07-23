@@ -1,5 +1,5 @@
 - name: setting variables
-  set_facts:
+  set_fact:
     node_modules_dir: /usr/local
 
 - name: Install node packages
