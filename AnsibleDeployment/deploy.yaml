@@ -5,19 +5,8 @@
   tasks:
     - include_tasks: requirements.yaml
 
-- name: Setup and configure database
-  hosts: database
-  become: yes
-  tasks:
-    - include_tasks: database.yaml
+- name: SQL Database
+  import_playbook: database.yaml
 
-- name: Setup and configure frontend application
-  hosts: frontend
-  become: yes
-  environment:
-    MYSQL_HOST: '{{ mysql_host }}'
-    MYSQL_USER: '{{ mysql_user }}'
-    MYSQL_PASSWORD: '{{ mysql_pass }}'
-    MYSQL_DB: '{{ mysql_db }}'
-  tasks:
-    - include_tasks: frontend.yaml
+- name: Application
+  import_playbook: frontend.yaml

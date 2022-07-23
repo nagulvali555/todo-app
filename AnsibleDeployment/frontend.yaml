@@ -1,67 +1,67 @@
-- name: set variables
-  set_fact:
-    node_module_dir: /usr/local
-    working_directory: todo
-    app_user: ubuntu
-    app_group: ubuntu
-    application: /home/ubuntu/todo/app/src/index.js
+---
+- name: Setup and configure frontend application
+  hosts: frontend
+  become: yes
+  tasks:
+    - name: set variables
+      set_fact:
+        node_module_dir: /usr/local
+        working_directory: todo
+        app_user: ubuntu
+        app_group: ubuntu
+        application: /home/ubuntu/todo/app/src/index.js
 
-- name: Install node and npm
-  package:
-    name:
-      - nodejs
-      - npm
-    state: present
+    - name: Install node and npm
+      package:
+        name:
+          - nodejs
+          - npm
+        state: present
 
-- name: Install required npm packages
-  npm:
-    name: yarn
-    path: '{{ node_module_dir }}'
-    state: present
+    - name: Install required npm packages
+      npm:
+        name: yarn
+        path: '{{ node_module_dir }}'
+        state: present
 
-- name: Clone the project repository
-  become_user: '{{ app_user }}'
-  git:
-    repo: https://github.com/docker/getting-started.git
-    dest: '~/{{ working_directory }}'
-    clone: yes
+    - name: Clone the project repository
+      become_user: '{{ app_user }}'
+      git:
+        repo: https://github.com/docker/getting-started.git
+        dest: '~/{{ working_directory }}'
+        clone: yes
 
-- name: check dependencies
-  become_user: '{{ app_user }}'
-  stat:
-    path: ~/.yarn_dependencies_installed
-  register: yarn_dependencies
+    - name: check dependencies
+      become_user: '{{ app_user }}'
+      stat:
+        path: ~/.yarn_dependencies_installed
+      register: yarn_dependencies
 
-- name: install dependencies
-  become_user: '{{ app_user }}'
-  command: '{{ item }}'
-  args:
-    chdir: '~/{{ working_directory }}/app/'
-  loop:
-    - yarn install --production
-    - touch ~/.yarn_dependencies_installed
-  environment:
-    PATH: "{{ node_module_dir }}/node_modules/yarn/bin:{{ ansible_env.PATH }}"
-  when: not yarn_dependencies.stat.exists
+    - name: install dependencies
+      become_user: '{{ app_user }}'
+      command: '{{ item }}'
+      args:
+        chdir: '~/{{ working_directory }}/app/'
+      loop:
+        - yarn install --production
+        - touch ~/.yarn_dependencies_installed
+      environment:
+        PATH: "{{ node_module_dir }}/node_modules/yarn/bin:{{ ansible_env.PATH }}"
+      when: not yarn_dependencies.stat.exists
 
-- name: copy app service config file
-  template:
-    src: templates/todo.service.j2
-    dest: /etc/systemd/system/todo.service
+    - name: copy app service config file
+      template:
+        src: templates/todo.service.j2
+        dest: /etc/systemd/system/todo.service
 
-- name: update application permissions
-  file:
-    path: '{{ application }}'
-    mode: 0665
+    - name: update application permissions
+      file:
+        path: '{{ application }}'
+        mode: 0665
 
-- name: start application
-  systemd:
-    name: todo
-    daemon_reload: yes
-    enabled: yes
-    state: restarted
-  environment:
-    MYSQL_USER: '{{ mysql_user }}'
-    MYSQL_PASSWORD: '{{ mysql_pass }}'
-    MYSQL_HOST: '{{ mysql_host }}'
-    MYSQL_DB: '{{ mysql_db }}'
+    - name: start application
+      systemd:
+        name: todo
+        daemon_reload: yes
+        enabled: yes
+        state: restarted

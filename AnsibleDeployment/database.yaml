@@ -1,67 +1,72 @@
-- name: Install mysql
-  package:
-    name:
-      - mysql-server
-      - mysql-client
-    state: latest
+---
+- name: Setup and configure database
+  hosts: database
+  become: yes
+  tasks:
+    - name: Install mysql
+      package:
+        name:
+          - mysql-server
+          - mysql-client
+        state: latest
 
-- name: Install pip modules
-  pip:
-    name:
-      - PyMySQL
-    state: present
-    executable: pip3
+    - name: Install pip modules
+      pip:
+        name:
+          - PyMySQL
+        state: present
+        executable: pip3
 
-- name: Start mysql service
-  systemd:
-    name: mysql
-    state: started
-    enabled: yes
+    - name: Start mysql service
+      systemd:
+        name: mysql
+        state: started
+        enabled: yes
 
-- name: Check root password updated
-  stat:
-    path: ~/.mysql_root_password_updated
-  register: mysql_root_pass_check
+    - name: Check root password updated
+      stat:
+        path: ~/.mysql_root_password_updated
+      register: mysql_root_pass_check
 
-- name: Reload privilege tables
-  command: '{{ item }}'
-  loop:
-    - mysql -u root -e 'UPDATE mysql.user SET plugin="mysql_native_password" WHERE user="root" AND host="localhost"'
-    - mysql -u root -e 'FLUSH PRIVILEGES'
-    - touch ~/.mysql_root_password_updated
-  when: not mysql_root_pass_check.stat.exists
+    - name: Reload privilege tables
+      command: '{{ item }}'
+      loop:
+        - mysql -u root -e 'UPDATE mysql.user SET plugin="mysql_native_password" WHERE user="root" AND host="localhost"'
+        - mysql -u root -e 'FLUSH PRIVILEGES'
+        - touch ~/.mysql_root_password_updated
+      when: not mysql_root_pass_check.stat.exists
 
-- name: Ensure root user can only login from localhost
-  mysql_user:
-    login_user: root
-    login_password: ''
-    name: root
-    host: localhost
-    password: '{{ mysql_root_pass }}'
-    state: present
-  when: not mysql_root_pass_check.stat.exists
+    - name: Ensure root user can only login from localhost
+      mysql_user:
+        login_user: root
+        login_password: ''
+        name: root
+        host: localhost
+        password: '{{ mysql_root_pass }}'
+        state: present
+      when: not mysql_root_pass_check.stat.exists
 
-- name: Create todo database
-  mysql_db:
-    login_host: localhost
-    login_user: root
-    login_password: '{{ mysql_root_pass }}'
-    name: '{{ mysql_db }}'
-    state: present
+    - name: Create todo database
+      mysql_db:
+        login_host: localhost
+        login_user: root
+        login_password: '{{ mysql_root_pass }}'
+        name: '{{ mysql_db }}'
+        state: present
 
-- name: Create database user with privileges
-  mysql_user:
-    login_user: root
-    login_password: '{{ mysql_root_pass }}'
-    name: mysql
-    host: "%"
-    password: '{{ mysql_pass }}'
-    priv: '{{ mysql_db }}.*:ALL,GRANT'
-    state: present
+    - name: Create database user with privileges
+      mysql_user:
+        login_user: root
+        login_password: '{{ mysql_root_pass }}'
+        name: mysql
+        host: "%"
+        password: '{{ mysql_pass }}'
+        priv: '{{ mysql_db }}.*:ALL,GRANT'
+        state: present
 
-- name: Update mysql config file to allow remote connections
-  lineinfile:
-    path: /etc/mysql/mysql.conf.d/mysqld.cnf
-    regexp: "^bind-address=*"
-    line: "bind-address = 0.0.0.0"
-    backup: yes
+    - name: Update mysql config file to allow remote connections
+      lineinfile:
+        path: /etc/mysql/mysql.conf.d/mysqld.cnf
+        regexp: "^bind-address=*"
+        line: "bind-address = 0.0.0.0"
+        backup: yes
