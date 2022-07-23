@@ -15,10 +15,10 @@
     path: '{{ node_module_dir }}'
     state: present
 
-- name: Update path
-  lineinfile:
-    path: /etc/environment
-    line: PATH={{ node_module_dir }}/node_modules/yarn/bin:{{ ansible_env.PATH }}
+#- name: Update path
+#  lineinfile:
+#    path: /etc/environment
+#    line: PATH={{ node_module_dir }}/node_modules/yarn/bin:{{ ansible_env.PATH }}
 
 - name: Clone the project repository
   git:
@@ -30,6 +30,8 @@
   shell: yarn install --production
   args:
     chdir: ~/getting-started/app/
+  environment:
+    PATH: '{{ node_module_dir }}/node_modules/yarn/bin:{{ ansible_env.PATH }}'
 
 - name: run application
   command: node src/index.js
