@@ -6,14 +6,11 @@
     state: present
 
 - name: Install yarn
-  command: |
-    npm install yarn
-
-- name: Set PATH
-  lineinfile:
-    dest: /etc/environment
+  npm:
+    name:
+      - yarn
+    path: /usr/local/
     state: present
-    line: "PATH=/home/ubuntu/node_modules/yarn/bin:{{ ansible_env.PATH }}"
 
 - name: Clone the project repository
   git:
