@@ -54,8 +54,6 @@
       template:
         src: templates/todo.service.j2
         dest: /etc/systemd/system/todo.service
-      notify:
-        - Restart app
 
     - name: update application permissions
       file:
@@ -67,10 +65,4 @@
         name: todo
         daemon_reload: yes
         enabled: yes
-        state: started
-
-  handlers:
-    - name: Restart app
-      systemd:
-        name: todo
         state: restarted
