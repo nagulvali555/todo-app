@@ -22,7 +22,7 @@
     clone: yes
 
 - name: install dependencies
-  command: '{{ node_module_dir }}/yarn/bin/yarn install --production'
+  command: '{{ node_module_dir }}/node_modules/yarn/bin/yarn install --production'
   args:
     chdir: ~/getting-started/app/
 
