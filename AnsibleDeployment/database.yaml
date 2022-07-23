@@ -18,9 +18,6 @@
     state: started
     enabled: yes
 
-- name: Change the authentication plugin of MySQL root user to mysql_native_password
-  command: mysql -u root -e 'UPDATE mysql.user SET plugin="mysql_native_password" WHERE user="root"'
-
 - name: Ensure root user can only login from localhost
   mysql_user:
     login_user: root
@@ -39,7 +36,10 @@
     login_host: localhost
     login_user: root
     login_password: "{{ mysql_pass }}"
-    query: FLUSH PRIVILEGES
+    query: "{{ item }}"
+  loop:
+    - mysql -u root -e 'UPDATE mysql.user SET plugin="mysql_native_password" WHERE user="root"'
+    - FLUSH PRIVILEGES
 
 - name: Create todo database
   mysql_db:
