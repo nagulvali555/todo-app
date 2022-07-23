@@ -78,4 +78,4 @@
     - name: Restart mysql
       systemd:
         name: mysql
-        state: restart
+        state: restarted
