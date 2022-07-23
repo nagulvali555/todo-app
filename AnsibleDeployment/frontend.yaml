@@ -7,8 +7,7 @@
 
 - name: Install yarn
   npm:
-    name:
-      - yarn
+    name: yarn
     path: /usr/local/
     state: present
 
