@@ -22,7 +22,7 @@
   command: "{{ item }}"
   loop:
     - mysql -u root -e 'UPDATE mysql.user SET plugin="mysql_native_password" WHERE user="root" AND host="localhost"'
-    - mysql -u root -e 'UPDATE mysql.user SET Password=PASSWORD('{{ mysql_pass }}' WHERE user="root")'
+    - mysql -u root -e 'UPDATE mysql.user SET Password=PASSWORD('{{ mysql_pass }}') WHERE user="root"'
     - FLUSH PRIVILEGES
 
 #- name: Set MySQL root password
