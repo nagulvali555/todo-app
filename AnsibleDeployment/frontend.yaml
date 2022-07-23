@@ -18,7 +18,7 @@
 - name: Clone the project repository
   git:
     repo: https://github.com/docker/getting-started.git
-    destination: /home/ubuntu
+    dest: /home/ubuntu
     clone: yes
 
 - name: install dependencies
