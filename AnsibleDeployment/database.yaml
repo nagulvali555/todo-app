@@ -2,6 +2,7 @@
 - name: Setup and configure database
   hosts: database
   become: yes
+  gather_facts: no
   tasks:
     - name: Install mysql
       package:
@@ -70,3 +71,11 @@
         regexp: "^bind-address=*"
         line: "bind-address = 0.0.0.0"
         backup: yes
+      notify:
+        - Restart mysql
+
+  handlers:
+    - name: Restart mysql
+      systemd:
+        name: mysql
+        state: restart
