@@ -27,6 +27,6 @@
     chdir: ~/getting-started/app/
 
 - name: run application
-  command: node src/index.js &
+  command: nohup node src/index.js >> app.log 2>&1 &
   args:
     chdir: ~/getting-started/app/
