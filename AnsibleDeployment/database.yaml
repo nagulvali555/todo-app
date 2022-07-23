@@ -50,6 +50,8 @@
 
 - name: Create database with all database privileges
   mysql_user:
+    login_user: root
+    login_password: '{{ mysql_root_pass }}'
     name: mysql
     password: '{{ mysql_pass }}'
     priv: '{{ mysql_db }}.*:ALL,GRANT'
