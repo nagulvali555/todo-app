@@ -20,20 +20,20 @@
     state: present
 
 - name: Clone the project repository
-  become_user: {{ app_user }}
+  become_user: '{{ app_user }}'
   git:
     repo: https://github.com/docker/getting-started.git
     dest: '~/{{ working_directory }}'
     clone: yes
 
 - name: check dependencies
-  become_user: {{ app_user }}
+  become_user: '{{ app_user }}'
   stat:
     path: ~/.yarn_dependencies_installed
   register: yarn_dependencies
 
 - name: install dependencies
-  become_user: {{ app_user }}
+  become_user: '{{ app_user }}'
   command: '{{ item }}'
   args:
     chdir: '~/{{ working_directory }}/app/'
@@ -51,7 +51,7 @@
 
 - name: update application permissions
   file:
-    path: {{ application }}
+    path: '{{ application }}'
     mode: 0665
 
 - name: start application
