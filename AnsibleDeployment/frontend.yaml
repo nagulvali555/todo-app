@@ -15,7 +15,7 @@
 
 - name: Install required npm packages
   npm:
-    name: yarn forever
+    name: yarn
     path: '{{ node_module_dir }}'
     state: present
 
