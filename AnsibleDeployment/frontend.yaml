@@ -69,8 +69,8 @@
         enabled: yes
         state: started
 
-handlers:
-  - name: Restart app
-    systemd:
-      name: todo
-      state: restart
+  handlers:
+    - name: Restart app
+      systemd:
+        name: todo
+        state: restart
