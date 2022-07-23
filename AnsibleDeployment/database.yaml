@@ -29,7 +29,7 @@
     - mysql -u root -e 'UPDATE mysql.user SET plugin="mysql_native_password" WHERE user="root" AND host="localhost"'
     - mysql -u root -e 'FLUSH PRIVILEGES'
     - touch ~/.mysql_root_password_updated
-  when: mysql_root_pass_check.stat.exists
+  when: not mysql_root_pass_check.stat.exists
 
 - name: Ensure root user can only login from localhost
   mysql_user:
