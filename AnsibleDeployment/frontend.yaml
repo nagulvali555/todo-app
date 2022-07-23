@@ -59,3 +59,8 @@
     name: todo
     daemon_reload: yes
     state: restarted
+  environtment:
+    MYSQL_USER: '{{ mysql_user }}'
+    MYSQL_PASSWORD: '{{ mysql_pass }}'
+    MYSQL_HOST: '{{ mysql_host }}'
+    MYSQL_DB: '{{ mysql_db }}'

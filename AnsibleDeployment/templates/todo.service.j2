@@ -2,7 +2,7 @@
 Description='todo application'
 
 [Service]
-ExecStart="node {{ application }}"
+ExecStart=node {{ application }}
 ExecReload=/bin/kill -s HUP $MAINPID
 ExecStop=/bin/kill -s QUIT $MAINPID
 Restart=always
