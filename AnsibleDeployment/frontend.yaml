@@ -18,20 +18,18 @@
 - name: Clone the project repository
   git:
     repo: https://github.com/docker/getting-started.git
-    dest: /home/ubuntu
+    dest: ~/todo
     clone: yes
 
 - name: install dependencies
-  become_user: ubuntu
   command: yarn install --production
   args:
-    chdir: $HOME/getting-started/app/
+    chdir: ~/todo/getting-started/app/
 
 - name: run application
-  become_user: ubuntu
   command: node src/index.js
   args:
-    chdir: $HOME/getting-started/app/
+    chdir: ~/todo/getting-started/app/
   environment:
     MYSQL_HOST: "{{ mysql_host }}"
     MYSQL_USER: "{{ mysql_user }}"
