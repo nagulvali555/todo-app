@@ -64,6 +64,8 @@
         password: '{{ mysql_pass }}'
         priv: '{{ mysql_db }}.*:ALL,GRANT'
         state: present
+      notify:
+        - Restart mysql
 
     - name: Update mysql config file to allow remote connections
       lineinfile:
