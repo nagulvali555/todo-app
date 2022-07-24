@@ -8,7 +8,7 @@ all:
   children:
     frontend:
       hosts:
-        172.31.33.252:
+        172.31.46.11:
     database:
       hosts:
-        172.31.43.229:
+        172.31.43.47:
