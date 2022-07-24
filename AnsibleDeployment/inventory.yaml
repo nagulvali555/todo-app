@@ -1,6 +1,6 @@
 all:
   vars:
-    mysql_host: 172.31.43.229
+    mysql_host: 172.31.43.47
     mysql_root_pass: rootpassword
     mysql_db: todos
     mysql_user: mysql
